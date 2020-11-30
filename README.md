@@ -6,7 +6,7 @@ Interactive ipywidget and plotly framework for exploration hyperparamter tuning 
 ![Hyper Explore Demo](demo/demo.gif)
 
 # Requirements
-plotly == 4.12.0
+plotly == 4.12.0 <br>
 ipywidgets == 7.5.1
 
 # Usage
