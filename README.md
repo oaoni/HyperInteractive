@@ -21,4 +21,5 @@ initial_surface_axis = ['mu','alpha','best_test_corr']
 legend_group = 'model'
 
 tab = hyperExplore(data,initial_axis,initial_surface_axis,legend_group)
-tab```
+tab
+```
