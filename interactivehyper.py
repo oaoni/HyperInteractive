@@ -6,15 +6,16 @@ from ipywidgets import widgets
 import datetime
 
 def hyperExplore(df,initial_axis,initial_surface_axis,legend_group,hover_items):
-    
+
     data = df.assign(x=df[initial_axis[0]],y=df[initial_axis[1]])\
        .sort_values(legend_group)\
        .reset_index(drop=True)
 
     group_ops = data[legend_group].sort_values().unique()
+    num_groups = len(group_ops)
     axis_ops = data.columns.values
     lenSlide = '500px'
-    
+
     fig = px.scatter(data, x="x", y="y", color=legend_group,hover_data=hover_items,
                  log_x=True, title='Hyperparameter Exploration',height=600)
 
@@ -28,7 +29,7 @@ def hyperExplore(df,initial_axis,initial_surface_axis,legend_group,hover_items):
         xaxis=dict(title=initial_axis[0],
                    titlefont=dict(size=14)),
         yaxis=dict(title=initial_axis[1],
-                    titlefont=dict(size=14))             
+                    titlefont=dict(size=14))
         )
 
     fig.update_traces(marker=dict(size=20,line=dict(width=1.5,
@@ -38,10 +39,10 @@ def hyperExplore(df,initial_axis,initial_surface_axis,legend_group,hover_items):
     fig.update_layout(plot_bgcolor='rgba(0,0,0,0)')
     fig.update_xaxes(showgrid=True, gridwidth=.1, gridcolor='lightgrey')
     fig.update_yaxes(showgrid=True, gridwidth=.1, gridcolor='lightgrey')
-    
+
     param_drop1 = Dropdown(
-        value='None', 
-        options=np.insert(axis_ops,0,'None'), 
+        value='None',
+        options=np.insert(axis_ops,0,'None'),
         description='Parameter 1:'
     )
 
@@ -53,8 +54,8 @@ def hyperExplore(df,initial_axis,initial_surface_axis,legend_group,hover_items):
     )
 
     size_drop = Dropdown(
-        value='None', 
-        options=np.insert(axis_ops,0,'None'), 
+        value='None',
+        options=np.insert(axis_ops,0,'None'),
         description='Size:'
     )
 
@@ -75,14 +76,14 @@ def hyperExplore(df,initial_axis,initial_surface_axis,legend_group,hover_items):
     slider_group2 = widgets.HBox([size_drop, size_slider])
 
     xaxis = Dropdown(
-        value=initial_axis[0], 
-        options=axis_ops, 
+        value=initial_axis[0],
+        options=axis_ops,
         description='X-axis:'
     )
 
     yaxis = Dropdown(
-        value=initial_axis[1], 
-        options=axis_ops, 
+        value=initial_axis[1],
+        options=axis_ops,
         description='Y-axis:'
     )
 
@@ -96,18 +97,18 @@ def hyperExplore(df,initial_axis,initial_surface_axis,legend_group,hover_items):
                         ))
 
     x_surface = Dropdown(
-        value=initial_surface_axis[0], 
-        options=axis_ops, 
+        value=initial_surface_axis[0],
+        options=axis_ops,
         description='X-axis'
     )
     y_surface = Dropdown(
-        value=initial_surface_axis[1], 
-        options=axis_ops, 
+        value=initial_surface_axis[1],
+        options=axis_ops,
         description='Y-axis'
     )
     z_surface = Dropdown(
-        value=initial_surface_axis[2], 
-        options=axis_ops, 
+        value=initial_surface_axis[2],
+        options=axis_ops,
         description='Z-axis'
     )
 
@@ -147,10 +148,10 @@ def hyperExplore(df,initial_axis,initial_surface_axis,legend_group,hover_items):
     g2 = go.FigureWidget(data=fig2,
                         layout=go.Layout(
                             title=dict(
-                                text='Hyperparameter Surface: '+surface_buttons.value 
+                                text='Hyperparameter Surface: '+surface_buttons.value
                             )
                         ))
-    
+
 
     def axis_response(change):
         with g.batch_update():
@@ -158,7 +159,7 @@ def hyperExplore(df,initial_axis,initial_surface_axis,legend_group,hover_items):
             modified = change.owner.description
 
             if modified == xaxis.description:
-                for i in range(4):
+                for i in range(num_groups):
                     #Get data for legend group
                     filtered_data = data.query("{} == '{}'".format(legend_group,g.data[i].name))
 
@@ -168,7 +169,7 @@ def hyperExplore(df,initial_axis,initial_surface_axis,legend_group,hover_items):
                     g.layout.xaxis.title = xaxis.value
 
             elif modified == yaxis.description:
-                for i in range(4):
+                for i in range(num_groups):
                     #Get data for legend group
                     filtered_data = data.query("{} == '{}'".format(legend_group,g.data[i].name))
 
@@ -179,7 +180,7 @@ def hyperExplore(df,initial_axis,initial_surface_axis,legend_group,hover_items):
 
     def slider1_response(change):
         with g.batch_update():
-            for i in range(4):
+            for i in range(num_groups):
                 #Get data for legend group
                 filtered_data = data.query("{} == '{}'".format(legend_group,g.data[i].name))#make key var that iters
 
@@ -188,7 +189,7 @@ def hyperExplore(df,initial_axis,initial_surface_axis,legend_group,hover_items):
 
     def query_filt(filtered_data,i):
         #Query filtered data for slider specs
-    #     filt_bool = (filtered_data.learning_rate == lr_slider.value)#make learning_rate var 
+    #     filt_bool = (filtered_data.learning_rate == lr_slider.value)#make learning_rate var
         if param_drop1.value == 'None':
             #Assign data to graph
             g.data[i].x = filtered_data[xaxis.value]
@@ -223,7 +224,7 @@ def hyperExplore(df,initial_axis,initial_surface_axis,legend_group,hover_items):
                                          size=size_drop.value, size_max=size_slider.value)
                     traceSizes = [x.marker.size for x in sizeFig.data]
 
-                    for i in range(4):
+                    for i in range(num_groups):
                         g.data[i].marker.size = traceSizes[i]
                         g.data[i].marker.sizeref = sizeFig.data[0].marker.sizeref
                         g.data[i].marker.sizemode = sizeFig.data[0].marker.sizemode
@@ -265,11 +266,11 @@ def hyperExplore(df,initial_axis,initial_surface_axis,legend_group,hover_items):
     xaxis.observe(axis_response, names="value")
     yaxis.observe(axis_response, names="value")
     param_drop1.observe(param_update, names="value")
-    
+
     scatterTab = widgets.VBox([container,g])
     surfaceTab = widgets.VBox([container2,g2])
     tab = widgets.Tab([scatterTab,surfaceTab])
     tab.set_title(0,'Scatter')
     tab.set_title(1,'Surface')
-    
+
     return tab
