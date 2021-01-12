@@ -27,7 +27,7 @@ $ jupyter notebook
 import pandas as pd
 from interactivehyper import hyperExplore
 
-data = pd.read_csv('./HyperInteractive/demo/modeltune.csv')
+data = pd.read_csv('./demo/modeltune.csv')
 
 initial_axis = ['best_test_loss','best_test_corr']
 initial_surface_axis = ['mu','alpha','best_test_corr']
