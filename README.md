@@ -32,7 +32,7 @@ data = pd.read_csv('./demo/modeltune.csv')
 initial_axis = ['best_test_loss','best_test_corr']
 initial_surface_axis = ['mu','alpha','best_test_corr']
 legend_group = 'model'
-hover_items = ['lr','alpha','mu','rank']
+hover_items = ['learning_rate','alpha','mu'w]
 
 tab = hyperExplore(data,initial_axis,initial_surface_axis,legend_group,hover_items)
 tab
